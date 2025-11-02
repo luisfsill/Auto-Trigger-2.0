@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
-import { Zap } from "lucide-react";
+import { Zap, Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export const Login = () => {
@@ -11,6 +11,7 @@ export const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const { toast } = useToast();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -33,7 +34,7 @@ export const Login = () => {
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-2">
             <Zap className="w-12 h-12 text-primary" />
-            <h1 className="text-4xl font-bold gradient-text">Auto Trigger</h1>
+            <h1 className="text-4xl font-bold text-white">Auto Trigger</h1>
           </div>
           <p className="text-muted-foreground mt-3">
             Automação inteligente de mensagens
@@ -83,34 +84,44 @@ export const Login = () => {
 
             <div className="space-y-2">
               <Label htmlFor="password">Senha</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="bg-secondary/50 border-white/10"
-              />
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="bg-secondary/50 border-white/10 pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
             </div>
 
             <Button
               type="submit"
-              className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-opacity"
+              className="w-full bg-primary hover:bg-primary/90 transition-colors"
             >
               {isLogin ? "Entrar" : "Criar conta"}
             </Button>
           </form>
 
           <div className="text-center">
-            <button
-              onClick={() => setIsLogin(!isLogin)}
-              className="text-sm text-muted-foreground hover:text-primary transition-colors"
-            >
-              {isLogin
-                ? "Não tem conta? Cadastre-se"
-                : "Já tem conta? Faça login"}
-            </button>
+            <p className="text-sm text-muted-foreground">
+              {isLogin ? "Não tem conta? " : "Já tem conta? "}
+              <button
+                onClick={() => setIsLogin(!isLogin)}
+                className="text-primary hover:underline transition-colors"
+              >
+                {isLogin ? "Cadastre-se" : "Faça login"}
+              </button>
+            </p>
           </div>
         </Card>
       </div>
