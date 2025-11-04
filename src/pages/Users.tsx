@@ -364,73 +364,80 @@ export const Users = () => {
 
         {/* Modal de Edição */}
         <Dialog open={!!editingUser} onOpenChange={closeEditModal}>
-          <DialogContent className="glass-card sm:max-w-[425px] border-white/10">
-            <DialogHeader>
-              <DialogTitle>Editar Usuário</DialogTitle>
-              <DialogDescription>
+          <DialogContent className="glass-card sm:max-w-[500px] border border-white/10 bg-card/95 backdrop-blur-xl">
+            <DialogHeader className="border-b border-white/10 pb-4">
+              <DialogTitle className="text-2xl font-bold text-foreground">Editar Usuário</DialogTitle>
+              <DialogDescription className="text-muted-foreground">
                 Atualize as informações do usuário abaixo.
               </DialogDescription>
             </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid gap-2">
-                <Label htmlFor="name">Nome</Label>
+            <div className="grid gap-6 py-6">
+              <div className="grid gap-3">
+                <Label htmlFor="name" className="text-foreground font-medium">Nome</Label>
                 <Input
                   id="name"
                   value={editFormData.name}
                   onChange={(e) => setEditFormData({ ...editFormData, name: e.target.value })}
-                  className="bg-secondary/50 border-white/10"
+                  className="glass-card bg-secondary/30 border-white/20 text-foreground placeholder:text-muted-foreground focus:border-primary/50 focus:ring-primary/20"
                   placeholder="Nome completo"
                 />
               </div>
-              <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
+              <div className="grid gap-3">
+                <Label htmlFor="email" className="text-foreground font-medium">Email</Label>
                 <Input
                   id="email"
                   type="email"
                   value={editFormData.email}
                   onChange={(e) => setEditFormData({ ...editFormData, email: e.target.value })}
-                  className="bg-secondary/50 border-white/10"
+                  className="glass-card bg-secondary/30 border-white/20 text-foreground placeholder:text-muted-foreground focus:border-primary/50 focus:ring-primary/20"
                   placeholder="email@exemplo.com"
                 />
               </div>
-              <div className="grid gap-2">
-                <Label htmlFor="password">Nova Senha</Label>
+              <div className="grid gap-3">
+                <Label htmlFor="password" className="text-foreground font-medium">Nova Senha</Label>
                 <Input
                   id="password"
                   type="password"
                   value={editFormData.password}
                   onChange={(e) => setEditFormData({ ...editFormData, password: e.target.value })}
-                  className="bg-secondary/50 border-white/10"
+                  className="glass-card bg-secondary/30 border-white/20 text-foreground placeholder:text-muted-foreground focus:border-primary/50 focus:ring-primary/20"
                   placeholder="Deixe em branco para manter a atual"
                 />
                 <p className="text-xs text-muted-foreground">
                   Mínimo 6 caracteres. Deixe vazio para não alterar.
                 </p>
               </div>
-              <div className="grid gap-2">
-                <Label htmlFor="role">Permissão</Label>
+              <div className="grid gap-3">
+                <Label htmlFor="role" className="text-foreground font-medium">Permissão</Label>
                 <Select
                   value={editFormData.role}
                   onValueChange={(value: 'admin' | 'user') => 
                     setEditFormData({ ...editFormData, role: value })
                   }
                 >
-                  <SelectTrigger className="bg-secondary/50 border-white/10">
+                  <SelectTrigger className="glass-card bg-secondary/30 border-white/20 text-foreground focus:border-primary/50 focus:ring-primary/20">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="user">Usuário</SelectItem>
-                    <SelectItem value="admin">Administrador</SelectItem>
+                  <SelectContent className="glass-card bg-card/95 backdrop-blur-xl border-white/10">
+                    <SelectItem value="user" className="text-foreground focus:bg-primary/20 focus:text-foreground">Usuário</SelectItem>
+                    <SelectItem value="admin" className="text-foreground focus:bg-primary/20 focus:text-foreground">Administrador</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={closeEditModal}>
+            <DialogFooter className="border-t border-white/10 pt-4 gap-2">
+              <Button 
+                variant="outline" 
+                onClick={closeEditModal}
+                className="glass-card bg-secondary/30 border-white/20 text-foreground hover:bg-secondary/50 hover:border-white/30"
+              >
                 Cancelar
               </Button>
-              <Button onClick={handleSaveUser}>
-                Salvar
+              <Button 
+                onClick={handleSaveUser}
+                className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20"
+              >
+                Salvar Alterações
               </Button>
             </DialogFooter>
           </DialogContent>
@@ -438,16 +445,21 @@ export const Users = () => {
 
         {/* Modal de Confirmação de Exclusão */}
         <AlertDialog open={!!deleteUserId} onOpenChange={() => setDeleteUserId(null)}>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
-              <AlertDialogDescription>
+          <AlertDialogContent className="glass-card bg-card/95 backdrop-blur-xl border border-white/10">
+            <AlertDialogHeader className="border-b border-white/10 pb-4">
+              <AlertDialogTitle className="text-2xl font-bold text-foreground">Confirmar exclusão</AlertDialogTitle>
+              <AlertDialogDescription className="text-muted-foreground">
                 Tem certeza que deseja excluir este usuário? Esta ação não pode ser desfeita.
               </AlertDialogDescription>
             </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancelar</AlertDialogCancel>
-              <AlertDialogAction onClick={handleDeleteUser}>
+            <AlertDialogFooter className="border-t border-white/10 pt-4 gap-2">
+              <AlertDialogCancel className="glass-card bg-secondary/30 border-white/20 text-foreground hover:bg-secondary/50 hover:border-white/30">
+                Cancelar
+              </AlertDialogCancel>
+              <AlertDialogAction 
+                onClick={handleDeleteUser}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-lg shadow-destructive/20"
+              >
                 Excluir
               </AlertDialogAction>
             </AlertDialogFooter>
