@@ -39,19 +39,19 @@ export type Database = {
         Row: {
           id: string
           user_id: string
-          role: 'admin' | 'user'
+          role: Database['public']['Enums']['app_role']
           created_at: string
         }
         Insert: {
           id?: string
           user_id: string
-          role: 'admin' | 'user'
+          role: Database['public']['Enums']['app_role']
           created_at?: string
         }
         Update: {
           id?: string
           user_id?: string
-          role?: 'admin' | 'user'
+          role?: Database['public']['Enums']['app_role']
           created_at?: string
         }
       }
@@ -223,7 +223,7 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: 'admin' | 'moderator' | 'user'
+      app_role: 'admin' | 'user'
       category_type: 'city' | 'company' | 'sector'
       payment_status: 'pending' | 'paid' | 'overdue'
     }

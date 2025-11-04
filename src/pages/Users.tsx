@@ -92,9 +92,11 @@ export const Users = () => {
 
       // Mapear roles por user_id
       const rolesMap = new Map<string, 'admin' | 'user'>();
-      rolesData?.forEach(role => {
-        rolesMap.set(role.user_id, role.role);
-      });
+      if (rolesData) {
+        rolesData.forEach((role: any) => {
+          rolesMap.set(role.user_id, role.role);
+        });
+      }
 
       // Combinar dados
       const usersWithRoles: UserWithRole[] = (profilesData || []).map((user) => ({
@@ -119,8 +121,8 @@ export const Users = () => {
 
   const handleRoleChange = async (userId: string, newRole: 'admin' | 'user') => {
     try {
-      const { error } = await supabase
-        .from('user_roles')
+      const { error } = await (supabase
+        .from('user_roles') as any)
         .update({ role: newRole })
         .eq('user_id', userId);
 
@@ -167,8 +169,8 @@ export const Users = () => {
 
     try {
       // Atualizar perfil
-      const { error: profileError } = await supabase
-        .from('profiles')
+      const { error: profileError } = await (supabase
+        .from('profiles') as any)
         .update({
           name: editFormData.name,
           email: editFormData.email,
@@ -179,8 +181,8 @@ export const Users = () => {
       if (profileError) throw profileError;
 
       // Atualizar role
-      const { error: roleError } = await supabase
-        .from('user_roles')
+      const { error: roleError } = await (supabase
+        .from('user_roles') as any)
         .update({ role: editFormData.role })
         .eq('user_id', editingUser.id);
 
