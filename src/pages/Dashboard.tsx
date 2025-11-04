@@ -10,20 +10,144 @@ import {
   CheckCircle2,
   AlertCircle
 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
+
+interface DashboardStats {
+  totalContacts: number;
+  messagesDay: number;
+  messagesWeek: number;
+  messagesMonth: number;
+  accountStatus: "active" | "expired";
+  accountExpiry: string;
+  userEmail: string;
+}
 
 export const Dashboard = () => {
-  // Mock data - será substituído por dados reais
-  const stats = {
-    totalContacts: 156,
-    messagesDay: 45,
-    messagesWeek: 287,
-    messagesMonth: 1243,
-    accountStatus: "active", // "active" ou "expired"
-    accountExpiry: "2025-03-15",
-    userEmail: "usuario@exemplo.com"
+  const { toast } = useToast();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [stats, setStats] = useState<DashboardStats>({
+    totalContacts: 0,
+    messagesDay: 0,
+    messagesWeek: 0,
+    messagesMonth: 0,
+    accountStatus: "active",
+    accountExpiry: "",
+    userEmail: ""
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Verificar autenticação
+    if (!user) {
+      navigate('/', { replace: true });
+      return;
+    }
+    loadDashboardData();
+  }, [user]);
+
+  const loadDashboardData = async () => {
+    try {
+      setLoading(true);
+      
+      // Usar usuário do contexto
+      if (!user) {
+        console.log('Sem usuário autenticado');
+        return;
+      }
+
+      // Total de contatos
+      const { count: contactsCount } = await supabase
+        .from('contacts')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id);
+
+      // Data atual e datas de referência
+      const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
+      const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
+      const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
+
+      // Mensagens do dia
+      const { count: messagesDay } = await supabase
+        .from('messages')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id)
+        .gte('created_at', today);
+
+      // Mensagens da semana
+      const { count: messagesWeek } = await supabase
+        .from('messages')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id)
+        .gte('created_at', weekAgo);
+
+      // Mensagens do mês
+      const { count: messagesMonth } = await supabase
+        .from('messages')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id)
+        .gte('created_at', monthAgo);
+
+      // Buscar último pagamento ativo (com tratamento de erro)
+      let lastPayment = null;
+      try {
+        const { data } = await supabase
+          .from('payments')
+          .select('*')
+          .eq('user_id', user.id)
+          .eq('status', 'paid')
+          .order('due_date', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        
+        lastPayment = data;
+      } catch (error) {
+        console.log('Tabela payments não existe ou erro ao buscar:', error);
+      }
+
+      // Verificar status da conta
+      const accountStatus = lastPayment && new Date(lastPayment.due_date) > now 
+        ? "active" 
+        : "expired";
+
+      setStats({
+        totalContacts: contactsCount || 0,
+        messagesDay: messagesDay || 0,
+        messagesWeek: messagesWeek || 0,
+        messagesMonth: messagesMonth || 0,
+        accountStatus,
+        accountExpiry: lastPayment?.expiry_date || "",
+        userEmail: user.email || ""
+      });
+
+    } catch (error) {
+      console.error('Erro ao carregar dados do dashboard:', error);
+      toast({
+        title: "Erro",
+        description: "Não foi possível carregar os dados do dashboard",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const isAccountActive = stats.accountStatus === "active";
+
+  if (loading) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center h-64">
+          <div className="text-muted-foreground">Carregando dados...</div>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>

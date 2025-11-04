@@ -6,7 +6,16 @@ const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiO
 
 export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
   auth: {
-    persistSession: true,
     autoRefreshToken: true,
+    persistSession: true,
+    detectSessionInUrl: true,
+    storage: window.localStorage,
+    flowType: 'pkce',
+    debug: import.meta.env.DEV
   },
+  global: {
+    headers: {
+      'X-Client-Info': 'auto-trigger-web',
+    }
+  }
 });

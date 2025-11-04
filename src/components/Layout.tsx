@@ -2,7 +2,8 @@ import { ReactNode, useState } from "react";
 import { Menu, X, Zap, Users, FolderTree, Contact, Send, CreditCard, LogOut, LayoutDashboard } from "lucide-react";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 
 interface LayoutProps {
   children: ReactNode;
@@ -19,8 +20,22 @@ const menuItems = [
 
 export const Layout = ({ children }: LayoutProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { isAdmin: isUserAdmin, signOut } = useAuth();
   const location = useLocation();
-  const isAdmin = true; // Mock - will be replaced with real auth
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      console.log('Iniciando logout...');
+      await signOut();
+      console.log('SignOut executado, navegando para /');
+      navigate('/', { replace: true });
+    } catch (error) {
+      console.error('Erro ao fazer logout:', error);
+      // Mesmo com erro, tentar navegar
+      navigate('/', { replace: true });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background dark">
@@ -51,7 +66,7 @@ export const Layout = ({ children }: LayoutProps) => {
               variant="ghost" 
               size="icon" 
               className="bg-primary/20 hover:bg-primary/30"
-              onClick={() => window.location.href = '/'}
+              onClick={handleLogout}
             >
               <LogOut className="w-5 h-5 text-primary" />
             </Button>
@@ -68,7 +83,7 @@ export const Layout = ({ children }: LayoutProps) => {
       >
         <nav className="p-4 space-y-2">
           {menuItems.map((item) => {
-            if (item.adminOnly && !isAdmin) return null;
+            if (item.adminOnly && !isUserAdmin) return null;
             const Icon = item.icon;
             const isActive = location.pathname === item.path;
             
