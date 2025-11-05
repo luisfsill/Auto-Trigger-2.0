@@ -4,6 +4,7 @@ import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { ThemeToggle } from "./ThemeToggle";
 
 interface LayoutProps {
   children: ReactNode;
@@ -60,8 +61,9 @@ export const Layout = ({ children }: LayoutProps) => {
             <span className="text-lg sm:text-xl font-bold text-foreground whitespace-nowrap">Auto Trigger</span>
           </div>
           
-          {/* Logout - Direita */}
-          <div className="flex justify-end lg:w-auto">
+          {/* Theme Toggle e Logout - Direita */}
+          <div className="flex items-center gap-2 justify-end lg:w-auto">
+            <ThemeToggle />
             <Button 
               variant="ghost" 
               size="icon" 

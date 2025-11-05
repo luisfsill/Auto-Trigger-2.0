@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./hooks/useAuth";
+import { ThemeProvider } from "./components/ThemeProvider";
 import { Login } from "./pages/Login";
 import { Dashboard } from "./pages/Dashboard";
 import { Users } from "./pages/Users";
@@ -17,24 +18,26 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Login />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/users" element={<Users />} />
-            <Route path="/categories" element={<Categories />} />
-            <Route path="/contacts" element={<Contacts />} />
-            <Route path="/messages" element={<Messages />} />
-            <Route path="/payments" element={<Payments />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </AuthProvider>
+    <ThemeProvider defaultTheme="dark" storageKey="auto-trigger-theme">
+      <AuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Login />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/users" element={<Users />} />
+              <Route path="/categories" element={<Categories />} />
+              <Route path="/contacts" element={<Contacts />} />
+              <Route path="/messages" element={<Messages />} />
+              <Route path="/payments" element={<Payments />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </AuthProvider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 

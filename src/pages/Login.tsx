@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Zap, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -66,7 +67,10 @@ export const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background dark flex items-center justify-center p-4">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
+      </div>
       <div className="w-full max-w-md animate-fade-in">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-2">
