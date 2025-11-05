@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Zap, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { toast } from "@/hooks/use-toast";
 
 export const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -30,12 +31,32 @@ export const Login = () => {
     try {
       if (isLogin) {
         const { error } = await signIn(email, password);
-        if (!error) {
+        if (error) {
+          toast({
+            variant: "destructive",
+            title: "Erro ao fazer login",
+            description: error.message === "Invalid login credentials" 
+              ? "E-mail ou senha incorretos" 
+              : "Ocorreu um erro ao fazer login. Tente novamente.",
+          });
+        } else {
           navigate("/dashboard");
         }
       } else {
         const { error } = await signUp(email, password, name);
-        if (!error) {
+        if (error) {
+          toast({
+            variant: "destructive",
+            title: "Erro ao criar conta",
+            description: error.message === "User already registered"
+              ? "Este e-mail já está cadastrado"
+              : "Ocorreu um erro ao criar a conta. Tente novamente.",
+          });
+        } else {
+          toast({
+            title: "Conta criada com sucesso!",
+            description: "Faça login para continuar.",
+          });
           setIsLogin(true);
         }
       }
